@@ -3,6 +3,5 @@ __pycache__/
 *.pyc
 cache/
 osmnx_error.log
-backend/data/*.pkl
-backend/data/*.json
+!backend/data/roads_cache.pkl
 .DS_Store
