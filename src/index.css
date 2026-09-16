@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+  background-color: #0a0f0d;
+  color: #eaf2ee;
+}
+
+.leaflet-container {
+  background: #0f1613;
+}
+
+/* Thin scrollbars to match the ops-console feel */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-thumb { background: #22302a; border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
