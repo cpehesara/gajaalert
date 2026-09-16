@@ -1,0 +1,5 @@
+[
+  {"sighting_id": "S001", "zone_id": "Z03", "timestamp": "2026-08-10T19:30:00", "elephant_count": 3, "source": "officer", "verified": true},
+  {"sighting_id": "S002", "zone_id": "Z07", "timestamp": "2026-08-11T22:10:00", "elephant_count": 1, "source": "simulated", "verified": false},
+  {"sighting_id": "S003", "zone_id": "Z09", "timestamp": "2026-08-12T05:45:00", "elephant_count": 5, "source": "officer", "verified": true}
+]

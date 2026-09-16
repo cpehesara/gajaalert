@@ -3,5 +3,6 @@ flask-cors>=4.0.0
 scikit-fuzzy>=0.4.2
 numpy>=1.24.0
 scipy>=1.10.0
+networkx>=3.0.0
 pytest>=8.0.0
 requests>=2.31.0
