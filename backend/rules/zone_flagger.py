@@ -13,7 +13,7 @@ from datetime import datetime
 
 from .rule_engine import evaluate_rules, get_matching_rules
 from ..sightings.sightings_table import get_sightings_by_zone
-from ..zones.zone_table import get_zone
+from ..zones.zone_table import get_zone, zone_data
 from ..weather.weather_table import get_drought_category
 
 
@@ -114,6 +114,23 @@ def get_zone_risk_flag(zone_id, current_time=None):
     }
 
 
+def get_all_zone_flags(current_time=None):
+    """
+    Loop through every zone in zone_table.py and return a risk flag
+    for each. This is the main function other modules (e.g. the
+    dashboard, Systems & Integration Lead) should call to get a
+    full system-wide risk picture.
+    """
+    all_flags = []
+    for zone in zone_data:
+        flag = get_zone_risk_flag(zone["zone_id"], current_time)
+        all_flags.append(flag)
+    return all_flags
+
+
 if __name__ == "__main__":
     print(get_zone_risk_flag("Z07"))
     print(get_zone_risk_flag("Z03"))
+    print("\n--- All zones ---")
+    for flag in get_all_zone_flags():
+        print(flag)
