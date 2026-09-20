@@ -1,82 +1,29 @@
 RULES = [
-    {
-        "id": "R1",
-        "sighting": "High",
-        "distance": "Near",
-        "time": "Night",
-        "season": "High",
-        "risk": "High"
-    },
-    {
-        "id": "R2",
-        "sighting": "High",
-        "distance": "Near",
-        "time": "Dusk",
-        "season": "High",
-        "risk": "High"
-    },
-    {
-        "id": "R3",
-        "sighting": "High",
-        "distance": "Medium",
-        "time": "Night",
-        "season": "Medium",
-        "risk": "High"
-    },
-    {
-        "id": "R4",
-        "sighting": "Medium",
-        "distance": "Near",
-        "time": "Night",
-        "season": "High",
-        "risk": "High"
-    },
-    {
-        "id": "R5",
-        "sighting": "Medium",
-        "distance": "Near",
-        "time": "Dusk",
-        "season": "Medium",
-        "risk": "High"
-    },
-    {
-        "id": "R6",
-        "sighting": "Medium",
-        "distance": "Medium",
-        "time": "Night",
-        "season": "High",
-        "risk": "Medium/High"
-    },
-    {
-        "id": "R7",
-        "sighting": "Low",
-        "distance": "Far",
-        "time": "Day",
-        "season": "Low",
-        "risk": "Low"
-    },
-    {
-        "id": "R8",
-        "sighting": "Low",
-        "distance": "Medium",
-        "time": "Day",
-        "season": "Low",
-        "risk": "Low"
-    },
-    {
-        "id": "R9",
-        "sighting": "Medium",
-        "distance": "Far",
-        "time": "Dusk",
-        "season": "Medium",
-        "risk": "Medium"
-    },
-    {
-        "id": "R10",
-        "sighting": "High",
-        "distance": "Far",
-        "time": "Night",
-        "season": "High",
-        "risk": "Medium/High"
-    }
+    {"id": "R1", "sighting": "High", "distance": "Near", "time": "Night", "season": "High", "risk": "High"},
+    {"id": "R2", "sighting": "High", "distance": "Near", "time": "Night", "season": "Medium", "risk": "High"},
+    {"id": "R3", "sighting": "High", "distance": "Near", "time": "Night", "season": "Low", "risk": "High"},
+    {"id": "R4", "sighting": "High", "distance": "Medium", "time": "Night", "season": "High", "risk": "High"},
+    {"id": "R5", "sighting": "High", "distance": "Medium", "time": "Night", "season": "Medium", "risk": "Medium/High"},
+    {"id": "R6", "sighting": "High", "distance": "Far", "time": "Night", "season": "High", "risk": "Medium/High"},
+    {"id": "R7", "sighting": "Medium", "distance": "Near", "time": "Night", "season": "High", "risk": "High"},
+    {"id": "R8", "sighting": "Medium", "distance": "Near", "time": "Night", "season": "Medium", "risk": "Medium/High"},
+    {"id": "R9", "sighting": "Medium", "distance": "Medium", "time": "Night", "season": "High", "risk": "Medium/High"},
+    {"id": "R10", "sighting": "Low", "distance": "Near", "time": "Night", "season": "High", "risk": "Medium"},
+    {"id": "R11", "sighting": "Low", "distance": "Near", "time": "Night", "season": "Medium", "risk": "Medium"},
+    {"id": "R12", "sighting": "Low", "distance": "Far", "time": "Night", "season": "Low", "risk": "Low"},
+    {"id": "R13", "sighting": "High", "distance": "Near", "time": "Dusk", "season": "High", "risk": "High"},
+    {"id": "R14", "sighting": "High", "distance": "Medium", "time": "Dusk", "season": "High", "risk": "High"},
+    {"id": "R15", "sighting": "Medium", "distance": "Near", "time": "Dusk", "season": "High", "risk": "High"},
+    {"id": "R16", "sighting": "Medium", "distance": "Near", "time": "Dusk", "season": "Medium", "risk": "Medium"},
+    {"id": "R17", "sighting": "Medium", "distance": "Far", "time": "Dusk", "season": "Medium", "risk": "Medium"},
+    {"id": "R18", "sighting": "Low", "distance": "Near", "time": "Dusk", "season": "High", "risk": "Medium"},
+    {"id": "R19", "sighting": "Low", "distance": "Near", "time": "Dusk", "season": "Medium", "risk": "Medium"},
+    {"id": "R20", "sighting": "Low", "distance": "Medium", "time": "Dusk", "season": "Low", "risk": "Low"},
+    {"id": "R21", "sighting": "Low", "distance": "Far", "time": "Dusk", "season": "Low", "risk": "Low"},
+    {"id": "R22", "sighting": "High", "distance": "Near", "time": "Day", "season": "High", "risk": "Medium/High"},
+    {"id": "R23", "sighting": "High", "distance": "Far", "time": "Day", "season": "High", "risk": "Medium"},
+    {"id": "R24", "sighting": "Medium", "distance": "Near", "time": "Day", "season": "Medium", "risk": "Medium"},
+    {"id": "R25", "sighting": "Medium", "distance": "Far", "time": "Day", "season": "Low", "risk": "Low"},
+    {"id": "R26", "sighting": "Low", "distance": "Medium", "time": "Day", "season": "Low", "risk": "Low"},
+    {"id": "R27", "sighting": "Low", "distance": "Far", "time": "Day", "season": "Low", "risk": "Low"},
 ]

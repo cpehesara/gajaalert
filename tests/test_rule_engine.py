@@ -7,4 +7,4 @@ def test_evaluate_rules_returns_matching_risk_for_known_rule():
 
 
 def test_evaluate_rules_returns_undetermined_for_unknown_combination():
-    assert evaluate_rules("High", "Far", "Day", "High") == "Undetermined"
+      assert evaluate_rules("Medium", "Medium", "Day", "Medium") == "Undetermined"
