@@ -82,6 +82,8 @@ def categorize_season(zone_id):
         return "High"
     elif drought == "Normal":
         return "Medium"
+    elif drought == "Unknown":
+        return "Medium"  # no weather data available — default to a cautious middle value
     else:
         return "Low"
 
@@ -134,3 +136,6 @@ if __name__ == "__main__":
     print("\n--- All zones ---")
     for flag in get_all_zone_flags():
         print(flag)
+
+    print("\n--- Missing weather data test (Z01) ---")
+    print("Season category for Z01:", categorize_season("Z01"))
