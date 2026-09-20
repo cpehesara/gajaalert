@@ -76,4 +76,4 @@ if __name__ == "__main__":
         print(zone)
 
     print("\nNeighbours of Z07:", get_neighbours("Z07"))
-    print("Flood-prone zones:", [z["zone_id"] for z in get_flood_prone_zones()])s
+    print("Flood-prone zones:", [z["zone_id"] for z in get_flood_prone_zones()])
