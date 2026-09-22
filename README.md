@@ -1,135 +1,111 @@
-# GajaAlert Frontend
+# GajaAlert
 
-GajaAlert is a decision-support dashboard for monitoring elephant movement risk in the Galgamuwa Divisional Secretariat Division. The frontend helps field officers and coordinators view risk zones, forecast movement, review patrol guidance, and submit verified sighting updates.
+GajaAlert is a decision-support system for monitoring elephant movement risk in the Galgamuwa Divisional Secretariat Division. It combines a React dashboard with a Flask risk-analysis API.
 
 ## Features
 
-- Interactive map view of elephant movement and risk areas
-- Zone risk summary table
-- Forecast and herd movement information
-- Patrol recommendation panel
-- Manual field update form for verified sightings
-- Activity log for recent events
-- Real-time updates support through Socket.IO
-
-## Tech Stack
-
-- React + Vite
-- Tailwind CSS
-- Zustand for state management
-- Leaflet / React Leaflet for map rendering
-- Recharts for charts
-- Axios for REST API calls
-- Socket.IO client for live updates
+- Interactive risk and movement dashboard
+- Zone risk summary and forecast panels
+- Patrol recommendations
+- Manual field updates and activity log
+- Rule-based and fuzzy risk evaluation
+- Movement prediction and spatial patrol routing
+- Mock-data mode for frontend review without the backend
 
 ## Prerequisites
 
-Before running the project, make sure you have:
+- Node.js 18 or newer
+- npm
+- Python 3.13 or a compatible supported Python version
 
-- Node.js 18+ installed
-- npm installed
+## Installation
 
-## Install dependencies
+Install frontend dependencies:
 
-```bash
+```powershell
 npm install
 ```
 
-## Run the frontend locally
+Install backend dependencies in the project virtual environment:
 
-```bash
+```powershell
+.\venv\Scripts\python.exe -m pip install -r requirements.txt
+```
+
+## Run locally
+
+### 1. Start the backend API
+
+From the repository root:
+
+```powershell
+.\venv\Scripts\python.exe -m backend.app
+```
+
+The Flask API runs at `http://127.0.0.1:5000`.
+
+### 2. Start the frontend
+
+In a second terminal:
+
+```powershell
 npm run dev
 ```
 
-Then open:
+Open `http://localhost:5173`.
 
-```text
-http://localhost:5173
+The frontend uses mock data by default, so the dashboard can be reviewed without a running backend. This is controlled in `src/store.js`:
+
+```js
+const USE_MOCK = true
 ```
 
-The Vite dev server is configured to proxy API requests to the backend at:
+Set it to `false` when the backend integration is ready. API calls are centralized in `src/services/api.js`; live events are handled in `src/services/socket.js`.
 
-```text
-http://localhost:4000
+## Testing
+
+Run the complete backend test suite:
+
+```powershell
+.\venv\Scripts\python.exe -m pytest -q
 ```
 
-This is defined in `vite.config.js`.
+Expected result:
 
-## Production build
+```text
+19 passed
+```
 
-To create a production build:
+The tests cover fuzzy risk scoring, rule evaluation, API endpoints, movement prediction, patrol routing, and spatial behavior.
 
-```bash
+Build the frontend:
+
+```powershell
 npm run build
 ```
 
-To preview the production build locally:
+Preview the production build:
 
-```bash
+```powershell
 npm run preview
 ```
 
 ## Project structure
 
 ```text
-src/
-  App.jsx                  # Main app layout
-  store.js                 # Zustand store and app state
-  data/
-    mockData.js            # Demo/mock data for local development
-  services/
-    api.js                 # API calls to backend endpoints
-    socket.js              # Socket.IO connection and event handlers
-  components/
-    Header.jsx
-    SidePanel.jsx
-    MapPanel.jsx
-    ForecastPanel.jsx
-    PatrolRecommendation.jsx
-    ManualUpdateForm.jsx
-    ZoneRiskTable.jsx
-    ActivityLog.jsx
+backend/                 Flask API and risk-analysis modules
+frontend/src/            Static frontend prototype
+src/                     React dashboard
+tests/                   Python test suite
+requirements.txt         Python dependencies
+package.json             Node scripts and dependencies
 ```
 
-## Working with the backend
+## Current validation status
 
-The frontend expects a backend API on `http://localhost:4000`.
-
-- API calls are centralized in `src/services/api.js`
-- Socket events are handled in `src/services/socket.js`
-- Vite forwards requests under `/api` to the backend via proxy
-
-If your backend is not ready yet, the app can run using mock data. This is controlled in `src/store.js`:
-
-```js
-const USE_MOCK = true
-```
-
-When `USE_MOCK` is `true`, the dashboard uses fake data for development and UI testing. Set it to `false` when the real backend is connected.
-
-## Common development workflow
-
-1. Install dependencies
-2. Start backend server if available
-3. Run `npm run dev`
-4. Open the app in the browser
-5. Test UI behavior and data flow
-6. When ready, build with `npm run build`
-
-## Notes
-
-This project is a frontend prototype. The app is designed to connect to a backend API and live event stream, but the mock mode allows the UI to work without a backend during early development.
-
-## Backend API
-
-Install the Python dependencies with `python -m pip install -r requirements.txt`, then run:
-
-```bash
-python -m backend.app
-```
-
-The API is available at `http://127.0.0.1:5000`. Run the complete test suite with:
-
-```bash
-pytest tests/ -v
-```
+- Backend tests: passing, 19 tests
+- Frontend production build: passing
+- Flask API smoke checks: passing
+- Frontend dashboard: available in mock-data mode
+- Backend API: port 5000
+- Vite frontend: port 5173
