@@ -4,4 +4,7 @@ __pycache__/
 cache/
 osmnx_error.log
 !backend/data/roads_cache.pkl
+node_modules
+dist
+.env
 .DS_Store
