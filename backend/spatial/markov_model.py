@@ -1,48 +1,66 @@
+"""Movement prediction helpers for simulated history and shared tables."""
+
 from collections import defaultdict
 
-def build_transition_matrix(history):
-    herd_sequences = defaultdict(list)
-    for record in sorted(history, key=lambda r: r["timestamp_cycle"]):
-        herd_id = record["sighting_id"].split("-")[-1]
-        herd_sequences[herd_id].append(record["zone_id"])
+from ..tables.markov_transition_table import transition_matrix
 
-    transition_counts = defaultdict(lambda: defaultdict(int))
-    for sequence in herd_sequences.values():
-        for i in range(len(sequence) - 1):
-            transition_counts[sequence[i]][sequence[i+1]] += 1
 
-    transition_matrix = {}
-    for zone_id, next_counts in transition_counts.items():
-        total = sum(next_counts.values())
-        transition_matrix[zone_id] = {
-            next_zone: round(count / total, 3)
-            for next_zone, count in next_counts.items()
+def transition_probabilities():
+    result = {}
+    for row in transition_matrix:
+        values = {
+            row["current_zone"]: row["P_stay"],
+            row["neighbour_A"]: row["P_neighbour_A"],
+            row["neighbour_B"]: row["P_neighbour_B"],
         }
-    return transition_matrix
+        total = sum(values.values()) or 1.0
+        result[row["current_zone"]] = {key: value / total for key, value in values.items()}
+    return result
 
-def predict_movement(transition_matrix, current_zone, zones):
-    if current_zone not in transition_matrix:
-        neighbors = list(zones[current_zone]["neighbors"].keys())
-        if not neighbors:
-            return {"zone_id": current_zone, "predicted_transitions": {}, "note": "isolated zone, no data"}
-        equal_prob = round(1 / len(neighbors), 3)
-        return {"zone_id": current_zone,
-                "predicted_transitions": {n: equal_prob for n in neighbors},
-                "note": "fallback: no simulated history for this zone"}
-    return {"zone_id": current_zone, "predicted_transitions": transition_matrix[current_zone]}
+
+def build_transition_matrix(history):
+    sequences = defaultdict(list)
+    for record in sorted(history, key=lambda item: item["timestamp_cycle"]):
+        sequences[record["sighting_id"].split("-")[-1]].append(record["zone_id"])
+    counts = defaultdict(lambda: defaultdict(int))
+    for sequence in sequences.values():
+        for current, following in zip(sequence, sequence[1:]):
+            counts[current][following] += 1
+    return {
+        zone: {target: round(count / sum(values.values()), 3) for target, count in values.items()}
+        for zone, values in counts.items()
+    }
+
 
 def validate_transition_matrix(matrix):
-    for zone_id, transitions in matrix.items():
-        total = sum(transitions.values())
-        assert abs(total - 1.0) < 0.01, f"{zone_id} sums to {total}, not 1.0"
+    for zone, probabilities in matrix.items():
+        total = sum(probabilities.values())
+        if abs(total - 1.0) >= 0.01:
+            raise AssertionError(f"{zone} sums to {total}, not 1.0")
     return True
 
-def prioritize_zones(fuzzy_scores, transition_matrix, zones, threshold=60):
+
+def predict_movement(*args):
+    if len(args) == 1:
+        zone_id = args[0]
+        probabilities = transition_probabilities().get(zone_id, {})
+        return {"zone_id": zone_id, "current_probability": probabilities.get(zone_id, 0.0),
+                "predicted_transitions": probabilities, "predicted_risk_window_hours": 6}
+    transition_matrix_value, current_zone, zones = args
+    probabilities = transition_matrix_value.get(current_zone)
+    if probabilities is not None:
+        return {"zone_id": current_zone, "predicted_transitions": probabilities}
+    neighbors = list(zones[current_zone]["neighbors"])
+    fallback = {neighbor: round(1 / len(neighbors), 3) for neighbor in neighbors} if neighbors else {}
+    return {"zone_id": current_zone, "predicted_transitions": fallback,
+            "note": "fallback: no simulated history for this zone"}
+
+
+def prioritize_zones(fuzzy_scores, transition_matrix_value, zones, threshold=60):
     priority = []
-    for zone_id, score_obj in fuzzy_scores.items():
-        current_risk = score_obj["risk_score"]
-        predicted = predict_movement(transition_matrix, zone_id, zones)
-        max_transition_prob = max(predicted["predicted_transitions"].values(), default=0)
-        if current_risk >= threshold or max_transition_prob > 0.5:
+    for zone_id, score in fuzzy_scores.items():
+        prediction = predict_movement(transition_matrix_value, zone_id, zones)
+        maximum = max(prediction["predicted_transitions"].values(), default=0)
+        if score["risk_score"] >= threshold or maximum > 0.5:
             priority.append(zone_id)
     return priority

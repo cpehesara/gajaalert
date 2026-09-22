@@ -119,3 +119,17 @@ When `USE_MOCK` is `true`, the dashboard uses fake data for development and UI t
 ## Notes
 
 This project is a frontend prototype. The app is designed to connect to a backend API and live event stream, but the mock mode allows the UI to work without a backend during early development.
+
+## Backend API
+
+Install the Python dependencies with `python -m pip install -r requirements.txt`, then run:
+
+```bash
+python -m backend.app
+```
+
+The API is available at `http://127.0.0.1:5000`. Run the complete test suite with:
+
+```bash
+pytest tests/ -v
+```

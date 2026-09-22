@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GajaAlert Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+    <header><p class="eyebrow">GALGAWAMU FIELD NETWORK</p><h1>GajaAlert</h1><p>Early warning for human-elephant conflict.</p></header>
+    <section class="toolbar"><label for="zone">Zone</label><select id="zone"><option>Z01</option><option>Z03</option><option selected>Z07</option><option>Z09</option></select><button id="refresh">Assess risk</button></section>
+    <section class="summary"><div><span>Current risk</span><strong id="level">--</strong></div><div><span>Score</span><strong id="score">--</strong></div><div><span>Assessment</span><strong id="status">Waiting</strong></div></section>
+    <section><h2>Contributing factors</h2><ul id="factors"><li>Choose a zone to load its assessment.</li></ul></section>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>

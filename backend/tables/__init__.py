@@ -1,0 +1,1 @@
+"""Shared data tables used by backend modules."""
