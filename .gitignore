@@ -1,6 +1,8 @@
+<<<<<<< HEAD
 ﻿venv/
 __pycache__/
 *.pyc
+.pytest_cache/
 cache/
 osmnx_error.log
 !backend/data/roads_cache.pkl
@@ -8,3 +10,9 @@ node_modules
 dist
 .env
 .DS_Store
+=======
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+>>>>>>> feature/chethana-dissanayaka
