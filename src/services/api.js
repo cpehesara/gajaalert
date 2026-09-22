@@ -6,6 +6,7 @@ import axios from 'axios'
 const client = axios.create({ baseURL: '/api' })
 
 export const api = {
+  getDashboard: () => client.get('/dashboard').then(r => r.data),
   getSituationSummary: () => client.get('/situation-summary').then(r => r.data),
   getHerds: () => client.get('/herds').then(r => r.data),
   getForecast: herdId => client.get(`/forecast/${herdId}`).then(r => r.data),
@@ -15,7 +16,7 @@ export const api = {
   getZones: () => client.get('/zones').then(r => r.data),
 
   // Officer manual override — the one write path in the whole app.
-  submitVerifiedSighting: payload => client.post('/sightings', payload).then(r => r.data),
+  submitVerifiedSighting: payload => client.post('/officer-update', payload).then(r => r.data),
 
   advanceCycle: () => client.post('/cycle/advance').then(r => r.data)
 }

@@ -106,6 +106,10 @@ package.json             Node scripts and dependencies
 - Backend tests: passing, 19 tests
 - Frontend production build: passing
 - Flask API smoke checks: passing
-- Frontend dashboard: available in mock-data mode
+- Frontend dashboard: connected to the Flask API
 - Backend API: port 5000
 - Vite frontend: port 5173
+
+The React dashboard loads its data from `GET /api/dashboard`, uses the Flask API
+through the Vite proxy, and sends verified sightings and cycle advances back to
+the backend. Start both processes for the complete integrated workflow.

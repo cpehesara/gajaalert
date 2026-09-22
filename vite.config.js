@@ -6,11 +6,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      // Your backend teammate's API — swap the target when the real
-      // backend URL exists. Everything under /api gets forwarded so the
-      // frontend never needs to hardcode a host.
       '/api': {
-        target: 'http://localhost:4000',
+        target: 'http://127.0.0.1:5000',
         changeOrigin: true
       }
     }
