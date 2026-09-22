@@ -1,0 +1,132 @@
+[
+  {
+    "zone_id": "Z01",
+    "name": "Galgamuwa Town",
+    "lat": 7.9821,
+    "lng": 80.2988,
+    "neighbors": {
+      "Z03": 3.86,
+      "Z02": 4.89,
+      "Z10": 8.96
+    },
+    "distance_to_water_km": null,
+    "flood_prone": false
+  },
+  {
+    "zone_id": "Z02",
+    "name": "Walagambapura",
+    "lat": 7.965,
+    "lng": 80.312,
+    "neighbors": {
+      "Z01": 4.89,
+      "Z10": 5.89,
+      "Z05": 8.39
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z03",
+    "name": "Bandaragama",
+    "lat": 8.001,
+    "lng": 80.285,
+    "neighbors": {
+      "Z01": 3.86,
+      "Z10": 7.75,
+      "Z02": 8.74
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z04",
+    "name": "Meegaswewa",
+    "lat": 7.945,
+    "lng": 80.26,
+    "neighbors": {
+      "Z05": 9.45,
+      "Z07": 10.53,
+      "Z01": 11.99
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z05",
+    "name": "Mahragalgamuwa",
+    "lat": 7.928,
+    "lng": 80.335,
+    "neighbors": {
+      "Z02": 8.39,
+      "Z04": 9.45,
+      "Z10": 10.2
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z06",
+    "name": "Patukadawala",
+    "lat": 8.025,
+    "lng": 80.36,
+    "neighbors": {
+      "Z03": 10.59,
+      "Z09": 11.59,
+      "Z10": 14.37
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z07",
+    "name": "Wadugama",
+    "lat": 7.915,
+    "lng": 80.22,
+    "neighbors": {
+      "Z04": 10.53,
+      "Z05": 13.99,
+      "Z01": 14.03
+    },
+    "distance_to_water_km": null,
+    "flood_prone": true
+  },
+  {
+    "zone_id": "Z08",
+    "name": "Diyakobala",
+    "lat": 8.04,
+    "lng": 80.24,
+    "neighbors": {
+      "Z03": 9.33,
+      "Z01": 10.97,
+      "Z02": 15.86
+    },
+    "distance_to_water_km": null,
+    "flood_prone": false
+  },
+  {
+    "zone_id": "Z09",
+    "name": "Kalankuttiya",
+    "lat": 7.955,
+    "lng": 80.385,
+    "neighbors": {
+      "Z10": 10.03,
+      "Z06": 11.59,
+      "Z05": 14.2
+    },
+    "distance_to_water_km": null,
+    "flood_prone": false
+  },
+  {
+    "zone_id": "Z10",
+    "name": "Rambewa Road Junction",
+    "lat": 7.99,
+    "lng": 80.34,
+    "neighbors": {
+      "Z02": 5.89,
+      "Z03": 7.75,
+      "Z01": 8.96
+    },
+    "distance_to_water_km": null,
+    "flood_prone": false
+  }
+]
