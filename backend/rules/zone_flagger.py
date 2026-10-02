@@ -78,14 +78,15 @@ def categorize_season(zone_id):
     """
     drought = get_drought_category(zone_id)
 
-    if drought == "Dry":
+    if drought in ("Severe Drought", "Dry"):
         return "High"
     elif drought == "Normal":
         return "Medium"
-    elif drought == "Unknown":
-        return "Medium"  # no weather data available — default to a cautious middle value
-    else:
+    elif drought == "Wet":
         return "Low"
+    else:
+        # "Unknown" or any unrecognised value: never silently read as safe
+        return "Medium"
 
 
 def get_zone_risk_flag(zone_id, current_time=None):
