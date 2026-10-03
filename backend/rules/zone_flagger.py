@@ -9,7 +9,7 @@ runs them through evaluate_rules() to produce the initial risk flag
 that feeds into the fuzzy logic module (Section 6.1, 8.2 of proposal).
 """
 
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from .rule_engine import evaluate_rules, get_matching_rules
 from ..sightings.sightings_table import get_sightings_by_zone
@@ -22,15 +22,38 @@ DAY_START_HOUR = 6
 DUSK_START_HOUR = 18
 NIGHT_START_HOUR = 20
 
+# Only sightings within this many days before "now" count as recent.
+# The Fuzzy module measures sighting frequency per week, so this matches it.
+RECENT_WINDOW_DAYS = 7
 
-def categorize_sighting_frequency(zone_id):
+
+def _sighting_datetime(sighting):
+    """Parse a sighting's date + time into a datetime, or None if invalid."""
+    try:
+        return datetime.strptime(
+            f"{sighting['date']} {sighting['time']}", "%Y-%m-%d %H:%M"
+        )
+    except (KeyError, ValueError, TypeError):
+        return None
+
+
+def categorize_sighting_frequency(zone_id, current_time=None):
     """
-    Count recent sightings for a zone and convert to Low/Medium/High.
+    Count sightings for a zone in the last RECENT_WINDOW_DAYS days and
+    convert to Low/Medium/High. Sightings that are older than the window,
+    in the future, or have an unreadable date/time are ignored.
     Thresholds are placeholders — adjust once real sighting volume
     is known from actual field data.
     """
-    sightings = get_sightings_by_zone(zone_id)
-    count = len(sightings)
+    if current_time is None:
+        current_time = datetime.now()
+    window_start = current_time - timedelta(days=RECENT_WINDOW_DAYS)
+
+    count = 0
+    for sighting in get_sightings_by_zone(zone_id):
+        when = _sighting_datetime(sighting)
+        if when is not None and window_start <= when <= current_time:
+            count += 1
 
     if count >= 3:
         return "High"
@@ -103,7 +126,7 @@ def get_zone_risk_flag(zone_id, current_time=None):
     Returns a dict with the risk level and the input conditions used,
     for explainability.
     """
-    sighting = categorize_sighting_frequency(zone_id)
+    sighting = categorize_sighting_frequency(zone_id, current_time)
     distance = categorize_distance(zone_id)
     time_of_day = categorize_time(current_time)
     season = categorize_season(zone_id)

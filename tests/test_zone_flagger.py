@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from unittest.mock import patch
 
 from backend.rules import zone_flagger
@@ -26,15 +26,38 @@ def test_time_night_dusk_day_boundaries():
 
 
 # ---------- categorize_sighting_frequency ----------
+NOW = datetime(2026, 8, 12, 12, 0)
+
+
+def _s(days_ago):
+    """Fake sighting record `days_ago` days before NOW (negative = future)."""
+    when = NOW - timedelta(days=days_ago)
+    return {"date": when.strftime("%Y-%m-%d"), "time": when.strftime("%H:%M")}
+
+
 def test_sighting_frequency_levels():
-    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=[]):
-        assert categorize_sighting_frequency("Z01") == "Low"
-    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=[1]):
-        assert categorize_sighting_frequency("Z01") == "Low"
-    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=[1, 2]):
-        assert categorize_sighting_frequency("Z01") == "Medium"
-    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=[1, 2, 3]):
-        assert categorize_sighting_frequency("Z01") == "High"
+    cases = [
+        ([], "Low"),
+        ([_s(1)], "Low"),
+        ([_s(1), _s(2)], "Medium"),
+        ([_s(1), _s(2), _s(3)], "High"),
+    ]
+    for records, expected in cases:
+        with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
+            assert categorize_sighting_frequency("Z01", NOW) == expected
+
+
+def test_old_sightings_are_ignored():
+    # 4 sightings in total, but only 2 are inside the 7-day window
+    records = [_s(1), _s(2), _s(10), _s(20)]
+    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
+        assert categorize_sighting_frequency("Z01", NOW) == "Medium"
+
+
+def test_future_and_malformed_sightings_are_ignored():
+    records = [_s(1), _s(2), _s(-1), {"date": "bad", "time": "??"}, {}]
+    with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
+        assert categorize_sighting_frequency("Z01", NOW) == "Medium"
 
 
 # ---------- categorize_distance ----------
