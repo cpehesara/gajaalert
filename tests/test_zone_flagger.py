@@ -113,10 +113,18 @@ def test_flag_reports_triggering_rule_for_covered_case():
 
 
 def test_flag_undetermined_has_no_trigger():
-    # Z01: Low, Medium distance, Dusk, Medium season -> not in rule base
-    flag = get_zone_risk_flag("Z01", datetime(2026, 8, 11, 18, 30))
+    # An unrecognised label matches no rule -> Undetermined, no trigger
+    with patch.object(zone_flagger, "categorize_season", return_value="Bogus"):
+        flag = get_zone_risk_flag("Z01", datetime(2026, 8, 11, 18, 30))
     assert flag["risk"] == "Undetermined"
     assert flag["triggered_by"] is None
+
+
+def test_zone_with_unknown_distance_still_gets_a_risk_level():
+    # Z01: Low, Medium (unknown distance), Dusk, Medium season -> derived rule
+    flag = get_zone_risk_flag("Z01", datetime(2026, 8, 11, 18, 30))
+    assert flag["risk"] != "Undetermined"
+    assert flag["triggered_by"].startswith("D")
 
 
 def test_unknown_zone_does_not_crash():
