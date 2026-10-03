@@ -16,6 +16,12 @@ from ..sightings.sightings_table import get_sightings_by_zone
 from ..zones.zone_table import get_zone, zone_data
 from ..weather.weather_table import get_drought_category
 
+# Time-of-day boundaries (24h clock). Keep in sync with the Fuzzy module's
+# membership functions (Day starts 06:00, Dusk peaks 18:00, Night after 20:00).
+DAY_START_HOUR = 6
+DUSK_START_HOUR = 18
+NIGHT_START_HOUR = 20
+
 
 def categorize_sighting_frequency(zone_id):
     """
@@ -56,16 +62,17 @@ def categorize_distance(zone_id):
 def categorize_time(current_time=None):
     """
     Convert a datetime (or the current time, if none given) into
-    Day / Dusk / Night.
+    Day / Dusk / Night. Boundaries are defined by the constants above
+    so they stay aligned with the Fuzzy module.
     """
     if current_time is None:
         current_time = datetime.now()
 
     hour = current_time.hour
 
-    if 18 <= hour < 20:
+    if DUSK_START_HOUR <= hour < NIGHT_START_HOUR:
         return "Dusk"
-    elif hour >= 20 or hour < 5:
+    elif hour >= NIGHT_START_HOUR or hour < DAY_START_HOUR:
         return "Night"
     else:
         return "Day"

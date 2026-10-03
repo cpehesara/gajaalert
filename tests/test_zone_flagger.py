@@ -20,7 +20,8 @@ def test_time_night_dusk_day_boundaries():
     assert categorize_time(datetime(2026, 8, 10, 18, 0)) == "Dusk"
     assert categorize_time(datetime(2026, 8, 10, 19, 59)) == "Dusk"
     assert categorize_time(datetime(2026, 8, 10, 20, 0)) == "Night"
-    assert categorize_time(datetime(2026, 8, 10, 5, 0)) == "Day"
+    assert categorize_time(datetime(2026, 8, 10, 5, 59)) == "Night"
+    assert categorize_time(datetime(2026, 8, 10, 6, 0)) == "Day"
     assert categorize_time(datetime(2026, 8, 10, 12, 0)) == "Day"
 
 
