@@ -108,12 +108,18 @@ def categorize_distance(zone_id):
     """
     Use the zone's distance_to_forest_km as a proxy for distance to
     corridor, and convert to Near/Medium/Far.
+
+    If the zone is unknown or its distance is not available (None), return
+    the cautious middle value "Medium" instead of guessing "Far", so missing
+    data is never silently read as safe.
     """
     zone = get_zone(zone_id)
     if zone is None:
-        return "Far"  # default fallback if zone data is missing
+        return "Medium"
 
-    distance_km = zone["distance_to_forest_km"]
+    distance_km = zone.get("distance_to_forest_km")
+    if distance_km is None:
+        return "Medium"
 
     if distance_km <= 1.0:
         return "Near"

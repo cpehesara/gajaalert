@@ -70,8 +70,15 @@ def test_distance_levels():
             assert categorize_distance("Z01") == expected
 
 
-def test_distance_unknown_zone_defaults_to_far():
-    assert categorize_distance("Z99") == "Far"
+def test_distance_unknown_zone_defaults_to_medium():
+    # Unknown data is never read as safe: cautious middle value
+    assert categorize_distance("Z99") == "Medium"
+
+
+def test_distance_missing_value_defaults_to_medium():
+    with patch.object(zone_flagger, "get_zone",
+                      return_value={"distance_to_forest_km": None}):
+        assert categorize_distance("Z01") == "Medium"
 
 
 # ---------- categorize_season ----------
@@ -98,7 +105,9 @@ def test_flag_output_schema():
 
 def test_flag_reports_triggering_rule_for_covered_case():
     # Z07: Low sightings, Near, Dusk, Dry -> R18 -> Medium
-    flag = get_zone_risk_flag("Z07", datetime(2026, 8, 11, 18, 30))
+    # (zone data has no real distance yet, so force "Near" for this rule test)
+    with patch.object(zone_flagger, "categorize_distance", return_value="Near"):
+        flag = get_zone_risk_flag("Z07", datetime(2026, 8, 11, 18, 30))
     assert flag["risk"] == "Medium"
     assert flag["triggered_by"] == "R18"
 
@@ -120,8 +129,10 @@ def test_unknown_zone_does_not_crash():
 def test_all_zone_flags_covers_every_zone():
     flags = get_all_zone_flags(datetime(2026, 8, 11, 22, 0))
     assert [f["zone_id"] for f in flags] == [z["zone_id"] for z in zone_data]
+    assert len(flags) == 10
 
-    # ---------- officer override ----------
+
+# ---------- officer override ----------
 def _r(days_ago, report_type="verified_sighting", verified=True):
     """Fake officer report `days_ago` days before NOW."""
     return {**_s(days_ago), "report_type": report_type, "verified": verified}
