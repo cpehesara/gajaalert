@@ -1,5 +1,9 @@
 from .rules_table import RULES
 
+# Every risk label the rule engine can return. Other modules should compare
+# against these, not against hand-typed strings.
+RISK_LEVELS = ("Low", "Medium", "Medium/High", "High", "Undetermined")
+
 
 def evaluate_rules(sighting_freq, distance, time_of_day, season):
     for rule in RULES:
