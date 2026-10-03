@@ -28,6 +28,16 @@ NIGHT_START_HOUR = 20
 # The Fuzzy module measures sighting frequency per week, so this matches it.
 RECENT_WINDOW_DAYS = 7
 
+# Category cutoffs, taken from where neighbouring terms of the Fuzzy module's
+# membership functions cross (equal membership), so both modules agree on
+# what "Low / Medium / High" and "Near / Medium / Far" mean:
+#   sightings per week: Low/Medium cross at ~3.1, Medium/High at ~9.0
+#   distance in km:     Near/Medium cross at ~1.9, Medium/Far at ~4.6
+SIGHTING_MEDIUM_MIN = 4   # 0-3 sightings in the window  -> Low
+SIGHTING_HIGH_MIN = 9     # 4-8 -> Medium, 9 or more -> High
+NEAR_MAX_KM = 1.9         # up to 1.9 km -> Near
+MEDIUM_MAX_KM = 4.6       # up to 4.6 km -> Medium, beyond -> Far
+
 
 def _record_datetime(record):
     """Parse a record's date + time into a datetime, or None if invalid."""
@@ -78,8 +88,8 @@ def categorize_sighting_frequency(zone_id, current_time=None):
       sightings are ignored (officer ground truth takes precedence), and
       each officer 'verified_sighting' report counts as a sighting.
 
-    Thresholds are placeholders — adjust once real sighting volume
-    is known from actual field data.
+    Cutoffs come from the Fuzzy module's membership functions (see the
+    constants at the top); recheck them against the simulated dataset.
     """
     if current_time is None:
         current_time = datetime.now()
@@ -96,9 +106,9 @@ def categorize_sighting_frequency(zone_id, current_time=None):
 
     count += sum(1 for r in reports if r.get("report_type") == "verified_sighting")
 
-    if count >= 3:
+    if count >= SIGHTING_HIGH_MIN:
         return "High"
-    elif count == 2:
+    elif count >= SIGHTING_MEDIUM_MIN:
         return "Medium"
     else:
         return "Low"
@@ -121,9 +131,9 @@ def categorize_distance(zone_id):
     if distance_km is None:
         return "Medium"
 
-    if distance_km <= 1.0:
+    if distance_km <= NEAR_MAX_KM:
         return "Near"
-    elif distance_km <= 2.0:
+    elif distance_km <= MEDIUM_MAX_KM:
         return "Medium"
     else:
         return "Far"

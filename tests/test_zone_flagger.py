@@ -37,34 +37,30 @@ def _s(days_ago):
 
 
 def test_sighting_frequency_levels():
-    cases = [
-        ([], "Low"),
-        ([_s(1)], "Low"),
-        ([_s(1), _s(2)], "Medium"),
-        ([_s(1), _s(2), _s(3)], "High"),
-    ]
-    for records, expected in cases:
+    cases = [(0, "Low"), (1, "Low"), (3, "Low"), (4, "Medium"), (8, "Medium"), (9, "High")]
+    for n, expected in cases:
+        records = [_s(1)] * n
         with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
             assert categorize_sighting_frequency("Z01", NOW) == expected
 
 
 def test_old_sightings_are_ignored():
-    # 4 sightings in total, but only 2 are inside the 7-day window
-    records = [_s(1), _s(2), _s(10), _s(20)]
+    # 9 sightings in total (would be High), but only 4 are inside the 7-day window
+    records = [_s(1)] * 4 + [_s(10)] * 5
     with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
         assert categorize_sighting_frequency("Z01", NOW) == "Medium"
 
 
 def test_future_and_malformed_sightings_are_ignored():
-    records = [_s(1), _s(2), _s(-1), {"date": "bad", "time": "??"}, {}]
+    records = [_s(1)] * 4 + [_s(-1)] * 3 + [{"date": "bad", "time": "??"}, {}]
     with patch.object(zone_flagger, "get_sightings_by_zone", return_value=records):
         assert categorize_sighting_frequency("Z01", NOW) == "Medium"
 
 
 # ---------- categorize_distance ----------
 def test_distance_levels():
-    for km, expected in [(0.5, "Near"), (1.0, "Near"), (1.5, "Medium"),
-                         (2.0, "Medium"), (2.5, "Far")]:
+    for km, expected in [(0.5, "Near"), (1.9, "Near"), (2.0, "Medium"),
+                         (4.6, "Medium"), (4.7, "Far")]:
         with patch.object(zone_flagger, "get_zone",
                           return_value={"distance_to_forest_km": km}):
             assert categorize_distance("Z01") == expected
@@ -157,21 +153,21 @@ def _run(sightings, reports):
 
 
 def test_simulated_sightings_count_without_officer_report():
-    assert _run([_sim(1), _sim(2), _sim(3)], []) == "High"
+    assert _run([_sim(1)] * 9, []) == "High"
 
 
 def test_verified_no_activity_report_overrides_simulated():
     survey = _r(0.5, report_type="patrol_survey")
-    assert _run([_sim(1), _sim(2), _sim(3)], [survey]) == "Low"
+    assert _run([_sim(1)] * 9, [survey]) == "Low"
 
 
 def test_officer_verified_sightings_are_counted():
-    assert _run([], [_r(1), _r(2), _r(3)]) == "High"
+    assert _run([], [_r(1)] * 9) == "High"
 
 
 def test_unverified_officer_report_is_ignored():
     unverified = _r(0.5, report_type="patrol_survey", verified=False)
-    assert _run([_sim(1), _sim(2), _sim(3)], [unverified]) == "High"
+    assert _run([_sim(1)] * 9, [unverified]) == "High"
 
 
 def test_has_officer_override_flag():
