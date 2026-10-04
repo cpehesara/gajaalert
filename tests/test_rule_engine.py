@@ -7,4 +7,5 @@ def test_evaluate_rules_returns_matching_risk_for_known_rule():
 
 
 def test_evaluate_rules_returns_undetermined_for_unknown_combination():
-      assert evaluate_rules("Medium", "Medium", "Day", "Medium") == "Undetermined"
+    # Every valid label combination now has a rule; an unrecognised label does not.
+    assert evaluate_rules("Medium", "Medium", "Day", "Unknown") == "Undetermined"

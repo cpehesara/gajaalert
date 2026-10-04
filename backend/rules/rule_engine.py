@@ -2,6 +2,10 @@
 
 from .rules_table import RULES
 
+# Every risk label the rule engine can return. Other modules should compare
+# against these, not against hand-typed strings.
+RISK_LEVELS = ("Low", "Medium", "Medium/High", "High", "Undetermined")
+
 
 def _normalise(value):
     return str(value).strip().title() if value else None
