@@ -29,45 +29,25 @@ npm install
 Install backend dependencies in the project virtual environment:
 
 ```powershell
-.\venv\Scripts\python.exe -m pip install -r requirements.txt
+.\.venv\Scripts\python.exe -m pip install -r requirements.txt
 ```
 
 ## Run locally
 
-### 1. Start the backend API
-
-From the repository root:
-
-```powershell
-.\venv\Scripts\python.exe -m backend.app
-```
-
-The Flask API runs at `http://127.0.0.1:5000`.
-
-### 2. Start the frontend
-
-In a second terminal:
+Start the Flask API and Vite frontend together from the repository root:
 
 ```powershell
 npm run dev
 ```
 
-Open `http://localhost:5173`.
-
-The frontend uses mock data by default, so the dashboard can be reviewed without a running backend. This is controlled in `src/store.js`:
-
-```js
-const USE_MOCK = true
-```
-
-Set it to `false` when the backend integration is ready. API calls are centralized in `src/services/api.js`; live events are handled in `src/services/socket.js`.
+Open `http://localhost:5173`. The backend API runs at `http://127.0.0.1:5000` and is proxied by Vite. The combined command uses the project's `.venv` Python interpreter, so install backend dependencies there before starting.
 
 ## Testing
 
 Run the complete backend test suite:
 
 ```powershell
-.\venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest -q
 ```
 
 Expected result:
