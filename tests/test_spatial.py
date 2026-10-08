@@ -29,3 +29,15 @@ def test_multi_zone_route(zones):
     result = plan_patrol_route(zones, start, targets)
     assert result["route"][0] == start
     assert len(result["unreached_zones"]) == 0
+
+def test_graph_is_connected_and_two_way(zones):
+    for zid, z in zones.items():
+        for nid in z["neighbors"]:
+            assert zid in zones[nid]["neighbors"], f"{nid} missing back-edge to {zid}"
+    seen, stack = set(), [next(iter(zones))]
+    while stack:
+        cur = stack.pop()
+        if cur not in seen:
+            seen.add(cur)
+            stack.extend(zones[cur]["neighbors"])
+    assert seen == set(zones)

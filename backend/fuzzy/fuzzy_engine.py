@@ -1,8 +1,6 @@
 """Mamdani fuzzy HEC risk assessment and table integration."""
 
-from datetime import datetime
 from itertools import product
-from pathlib import Path
 
 import numpy as np
 from skfuzzy import control as ctrl
@@ -15,7 +13,17 @@ from ..tables.zone_table import get_zone
 
 _VARIABLES = build_antecedents()
 _RISK = build_consequent()
-_RISK_ORDER = {"low": 25, "medium": 50, "high": 82, "near": 82, "far": 25, "day": 25, "dusk": 50, "night": 82}
+
+# Severity scale per term (0 = least risk, 2 = most). Weights follow the Rule-Based module
+# (README "Derived rules"): score = 4*sighting + 2*distance + 2*time + 1*season, so recent
+# sightings count most and context (near forest, night, dry season) alone cannot reach High.
+_SEVERITY = {
+    "sighting": {"low": 0, "medium": 1, "high": 2},
+    "distance": {"far": 0, "medium": 1, "near": 2},
+    "time": {"day": 0, "dusk": 1, "night": 2},
+    "season": {"low": 0, "medium": 1, "high": 2},
+}
+_HIGH_MIN, _MEDIUM_MIN = 13, 7   # weighted score (0-16) -> consequent term
 
 
 def _build_system():
@@ -26,12 +34,9 @@ def _build_system():
         ("day", "dusk", "night"),
         ("low", "medium", "high"),
     ):
-        severity = (
-            _RISK_ORDER[sighting] + _RISK_ORDER[season]
-            + _RISK_ORDER["high" if distance == "near" else distance]
-            + _RISK_ORDER["high" if time == "night" else time]
-        ) / 4
-        output = "high" if severity >= 64 else "medium" if severity >= 42 else "low"
+        score = (4 * _SEVERITY["sighting"][sighting] + 2 * _SEVERITY["distance"][distance]
+                 + 2 * _SEVERITY["time"][time] + _SEVERITY["season"][season])
+        output = "high" if score >= _HIGH_MIN else "medium" if score >= _MEDIUM_MIN else "low"
         rules.append(ctrl.Rule(
             _VARIABLES[0][sighting] & _VARIABLES[1][distance]
             & _VARIABLES[2][time] & _VARIABLES[3][season], _RISK[output]
@@ -102,7 +107,8 @@ def evaluate_zone_risk_from_tables(zone_id, target_time=None):
     latest = sightings[-1] if sightings else {}
     report = get_latest_report(zone_id)
     count = sum(int(item.get("number_of_elephants", 0)) for item in sightings)
-    distance = float(latest.get("distance_to_corridor_km", zone.get("distance_to_forest_km", 10)))
+    raw = latest.get("distance_to_corridor_km", zone.get("distance_to_corridor_km"))
+    distance = 3.0 if raw is None else float(raw)   # unknown -> neutral middle
     hour = float((target_time or latest.get("time", "12:00")).split(":")[0])
     result = compute_risk_score(count, distance, hour, _seasonal_value(get_latest_weather(zone_id)), zone_id)
     if report and report.get("verified"):

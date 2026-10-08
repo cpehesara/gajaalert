@@ -10,9 +10,20 @@ export default function PatrolRecommendation() {
       </h2>
       <p className="mb-2 font-mono text-sm text-accent">{rec.route.join(' → ')}</p>
       <p className="text-xs text-textMuted">
-        Departing {rec.originLabel} · approx. {rec.distanceKm} km across {rec.zoneCount} zones,{' '}
+        Departing {rec.originLabel} · approx. {rec.distanceKm} km
+        {rec.estimatedMinutes ? ` (~${rec.estimatedMinutes} min)` : ''} across {rec.zoneCount} zones,{' '}
         {rec.note}.
       </p>
+      {rec.priorityZones?.length > 0 && (
+        <p className="mt-2 text-xs text-textMuted">
+          Priority targets: <span className="font-mono text-textPrimary">{rec.priorityZones.join(', ')}</span>
+        </p>
+      )}
+      {rec.unreachedZones?.length > 0 && (
+        <p className="mt-1 text-xs text-risk-critical">
+          Not reachable: {rec.unreachedZones.join(', ')}
+        </p>
+      )}
     </section>
   )
 }

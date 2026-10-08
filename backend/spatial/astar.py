@@ -5,7 +5,9 @@ import math
 
 
 def euclidean(coord1, coord2):
-    return math.sqrt((coord1[0] - coord2[0]) ** 2 + (coord1[1] - coord2[1]) ** 2)
+    mean_lat = math.radians((coord1[0] + coord2[0]) / 2)
+    return math.hypot((coord1[0] - coord2[0]) * 111.0,
+                      (coord1[1] - coord2[1]) * 111.0 * math.cos(mean_lat))
 
 
 def _zone_records(graph):

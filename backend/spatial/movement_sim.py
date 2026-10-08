@@ -1,7 +1,9 @@
-"""Offline movement simulation and a deterministic correlated walk helper."""
+"""Correlated random walk over the zone graph (herds may stay, avoid instant back-tracking)."""
 
-import random
 import numpy as np
+
+STAY_FACTOR = 12.0      # elephants linger ~1 day per 10 km zone: staying dominates moving
+BACKTRACK_FACTOR = 0.6  # directional persistence: stepping straight back is less likely
 
 
 def attractiveness(zone, season="dry"):
@@ -15,33 +17,37 @@ def attractiveness(zone, season="dry"):
     return score
 
 
-def crw_step(current_zone, zones, season="dry"):
+def crw_step(current_zone, zones, season="dry", previous_zone=None, rng=None):
+    """Next zone: a neighbour or the current zone (stay). Weighted, heading-correlated."""
+    rng = rng or np.random
     neighbors = list(zones[current_zone]["neighbors"])
     if not neighbors:
         return current_zone
-    scores = np.array([attractiveness(zones[neighbor], season) for neighbor in neighbors], dtype=float)
-    return str(np.random.choice(neighbors, p=scores / scores.sum()))
+    candidates = neighbors + [current_zone]
+    weights = []
+    for zone_id in neighbors:
+        w = attractiveness(zones[zone_id], season)
+        if zone_id == previous_zone:
+            w *= BACKTRACK_FACTOR
+        weights.append(w)
+    weights.append(attractiveness(zones[current_zone], season) * STAY_FACTOR)
+    weights = np.array(weights, dtype=float)
+    return str(rng.choice(candidates, p=weights / weights.sum()))
 
 
-def correlated_random_walk_step(current_zone, previous_zone, graph, attractiveness_fn=None, rng=None):
-    neighbors = list(graph.get(current_zone, {}))
-    if not neighbors:
-        return current_zone
-    attractiveness_fn = attractiveness_fn or (lambda zone: 1.0)
-    weights = [max(0.0, float(attractiveness_fn(zone))) * (1.25 if zone == previous_zone else 1.0)
-               for zone in neighbors]
-    chooser = rng or random
-    return chooser.choices(neighbors, weights=weights, k=1)[0]
-
-
-def simulate_herds(zones, n_herds=6, n_cycles=200, season="dry"):
-    positions = {f"herd{index}": np.random.choice(list(zones)) for index in range(n_herds)}
+def simulate_herds(zones, n_herds=6, n_cycles=200, season="dry", seed=None):
+    rng = np.random.RandomState(seed) if seed is not None else np.random
+    ids = list(zones)
+    positions = {f"herd{i}": str(rng.choice(ids)) for i in range(n_herds)}
+    previous = {h: None for h in positions}
+    sizes = {h: int(rng.randint(1, 12)) for h in positions}  # herd size stays stable
     history = []
     for cycle in range(n_cycles):
-        for herd_id, current_zone in positions.items():
-            next_zone = crw_step(current_zone, zones, season)
-            history.append({"sighting_id": f"SIM-{cycle}-{herd_id}", "zone_id": next_zone,
-                            "timestamp_cycle": cycle, "elephant_count": int(np.random.randint(1, 6)),
+        for herd_id, current in positions.items():
+            nxt = crw_step(current, zones, season, previous[herd_id], rng)
+            previous[herd_id] = current if nxt != current else previous[herd_id]
+            positions[herd_id] = nxt
+            history.append({"sighting_id": f"SIM-{cycle}-{herd_id}", "zone_id": nxt,
+                            "timestamp_cycle": cycle, "elephant_count": sizes[herd_id],
                             "source": "simulated", "verified": False})
-            positions[herd_id] = next_zone
     return history

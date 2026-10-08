@@ -1,21 +1,18 @@
 """Movement prediction helpers for simulated history and shared tables."""
 
+import json
 from collections import defaultdict
+from pathlib import Path
 
-from ..tables.markov_transition_table import transition_matrix
+from ..tables.zone_table import get_neighbours
+
+_MATRIX_FILE = Path(__file__).resolve().parents[1] / "data" / "transition_matrix.json"
 
 
 def transition_probabilities():
-    result = {}
-    for row in transition_matrix:
-        values = {
-            row["current_zone"]: row["P_stay"],
-            row["neighbour_A"]: row["P_neighbour_A"],
-            row["neighbour_B"]: row["P_neighbour_B"],
-        }
-        total = sum(values.values()) or 1.0
-        result[row["current_zone"]] = {key: value / total for key, value in values.items()}
-    return result
+    """Load the simulated Markov transition matrix (single source of truth)."""
+    with _MATRIX_FILE.open(encoding="utf-8") as handle:
+        return json.load(handle)
 
 
 def build_transition_matrix(history):
@@ -44,6 +41,9 @@ def predict_movement(*args):
     if len(args) == 1:
         zone_id = args[0]
         probabilities = transition_probabilities().get(zone_id, {})
+        if not probabilities:
+            neighbours = list(get_neighbours(zone_id))
+            probabilities = {n: round(1 / len(neighbours), 3) for n in neighbours}
         return {"zone_id": zone_id, "current_probability": probabilities.get(zone_id, 0.0),
                 "predicted_transitions": probabilities, "predicted_risk_window_hours": 6}
     transition_matrix_value, current_zone, zones = args

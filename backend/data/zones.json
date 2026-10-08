@@ -7,10 +7,14 @@
     "neighbors": {
       "Z03": 3.86,
       "Z02": 4.89,
-      "Z10": 8.96
+      "Z10": 8.96,
+      "Z04": 11.99,
+      "Z07": 14.03,
+      "Z08": 10.97
     },
-    "distance_to_water_km": null,
-    "flood_prone": false
+    "distance_to_water_km": 0.03,
+    "flood_prone": false,
+    "distance_to_forest_km": 0.15
   },
   {
     "zone_id": "Z02",
@@ -20,10 +24,13 @@
     "neighbors": {
       "Z01": 4.89,
       "Z10": 5.89,
-      "Z05": 8.39
+      "Z05": 8.39,
+      "Z03": 8.74,
+      "Z08": 15.86
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.22,
+    "flood_prone": true,
+    "distance_to_forest_km": 0.27
   },
   {
     "zone_id": "Z03",
@@ -33,10 +40,13 @@
     "neighbors": {
       "Z01": 3.86,
       "Z10": 7.75,
-      "Z02": 8.74
+      "Z02": 8.74,
+      "Z06": 10.59,
+      "Z08": 9.33
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.36,
+    "flood_prone": true,
+    "distance_to_forest_km": 1.97
   },
   {
     "zone_id": "Z04",
@@ -48,8 +58,9 @@
       "Z07": 10.53,
       "Z01": 11.99
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.08,
+    "flood_prone": true,
+    "distance_to_forest_km": 1.23
   },
   {
     "zone_id": "Z05",
@@ -59,10 +70,13 @@
     "neighbors": {
       "Z02": 8.39,
       "Z04": 9.45,
-      "Z10": 10.2
+      "Z10": 10.2,
+      "Z07": 13.99,
+      "Z09": 14.2
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.2,
+    "flood_prone": true,
+    "distance_to_forest_km": 2.51
   },
   {
     "zone_id": "Z06",
@@ -74,8 +88,9 @@
       "Z09": 11.59,
       "Z10": 14.37
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.27,
+    "flood_prone": true,
+    "distance_to_forest_km": 1.73
   },
   {
     "zone_id": "Z07",
@@ -87,8 +102,9 @@
       "Z05": 13.99,
       "Z01": 14.03
     },
-    "distance_to_water_km": null,
-    "flood_prone": true
+    "distance_to_water_km": 0.07,
+    "flood_prone": true,
+    "distance_to_forest_km": 4.7
   },
   {
     "zone_id": "Z08",
@@ -100,8 +116,9 @@
       "Z01": 10.97,
       "Z02": 15.86
     },
-    "distance_to_water_km": null,
-    "flood_prone": false
+    "distance_to_water_km": 0.19,
+    "flood_prone": false,
+    "distance_to_forest_km": 6.92
   },
   {
     "zone_id": "Z09",
@@ -113,8 +130,9 @@
       "Z06": 11.59,
       "Z05": 14.2
     },
-    "distance_to_water_km": null,
-    "flood_prone": false
+    "distance_to_water_km": 0.61,
+    "flood_prone": false,
+    "distance_to_forest_km": 0.0
   },
   {
     "zone_id": "Z10",
@@ -124,9 +142,13 @@
     "neighbors": {
       "Z02": 5.89,
       "Z03": 7.75,
-      "Z01": 8.96
+      "Z01": 8.96,
+      "Z05": 10.2,
+      "Z06": 14.37,
+      "Z09": 10.03
     },
-    "distance_to_water_km": null,
-    "flood_prone": false
+    "distance_to_water_km": 0.0,
+    "flood_prone": false,
+    "distance_to_forest_km": 2.49
   }
 ]
