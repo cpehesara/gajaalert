@@ -54,13 +54,13 @@ npm run dev
 
 Open `http://localhost:5173`.
 
-The frontend uses mock data by default, so the dashboard can be reviewed without a running backend. This is controlled in `src/store.js`:
+The frontend uses mock data by default, so the dashboard can be reviewed without a running backend. In mock mode, sightings and cycle advances are local to the browser session. To use the Flask API instead, set `VITE_USE_MOCK_DATA=false` in a `.env` file at the repository root, then restart Vite. The backend must be running on `http://127.0.0.1:5000` for live mode.
 
-```js
-const USE_MOCK = true
+```env
+VITE_USE_MOCK_DATA=false
 ```
 
-Set it to `false` when the backend integration is ready. API calls are centralized in `src/services/api.js`; live events are handled in `src/services/socket.js`.
+API calls are centralized in `src/services/api.js`; live events are handled in `src/services/socket.js`.
 
 ## Testing
 
@@ -106,7 +106,7 @@ package.json             Node scripts and dependencies
 - Backend tests: passing, 19 tests
 - Frontend production build: passing
 - Flask API smoke checks: passing
-- Frontend dashboard: connected to the Flask API
+- Frontend dashboard: mock data by default; set `VITE_USE_MOCK_DATA=false` to connect to the Flask API
 - Backend API: port 5000
 - Vite frontend: port 5173
 
